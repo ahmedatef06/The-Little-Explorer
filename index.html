@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The story of NASA's Mars Pathfinder mission and Sojourner, the first robotic rover to explore the surface of Mars.">
+    <title>Sojourner | The Little Explorer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <a href="#home" class="logo">SOJOURNER<span>.</span></a>
+        <nav>
+            <a href="#journey">Destination</a>
+            <a href="#why">Purpose</a>
+            <a href="#engineering">Design</a>
+            <a href="#operations">Operations</a>
+            <a href="#discoveries">Discoveries</a>
+            <a href="#legacy">Impact</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <p class="eyebrow">NASA MARS PATHFINDER MISSION · 1997</p>
+            <h1>The Little Explorer<br>
+                <span>First Rover on Mars</span>
+            </h1>
+            <p class="hero-description">
+                Follow the story of
+                Mars Pathfinder and its rover, Sojourner.
+            </p>
+            <a href="#journey" class="main-button">Start the Journey</a>
+        </div>
+        <div class="hero-image">
+            <img src="images/sojourner.jpg" alt="NASA's Sojourner rover on the surface of Mars">
+        </div>
+    </section>
+
+    <section class="facts">
+        <div class="fact"><h2>10.6 <span>kg</span></h2><p>Rover Mass</p></div>
+        <div class="fact"><h2>30 <span>cm</span></h2><p>Rover Height</p></div>
+        <div class="fact"><h2>16,500<span>+</span></h2><p>Images From the Lander</p></div>
+        <div class="fact"><h2>2.3 <span>billion bits</span></h2><p>Data Sent to Earth</p></div>
+    </section>
+
+    <!-- 1. Where did it go? -->
+    <section class="section" id="journey">
+        <div class="section-heading">
+            <p class="eyebrow">WHERE DID IT GO?</p>
+            <h2>From Florida to Ares Vallis</h2>
+            <p>
+                Pathfinder landed in Ares Vallis, an ancient flood plain in
+                Mars' northern hemisphere and one of the rockiest places on the planet.
+            </p>
+        </div>
+
+        <div class="timeline">
+            <button class="timeline-item active"
+                    data-title="Launch"
+                    data-date="December 4, 1996"
+                    data-description="Mars Pathfinder lifted off from Cape Canaveral Air Force Station in Florida on a Delta II 7925 rocket.">
+                <span class="timeline-dot"></span>
+                <span>Launch</span>
+                <small>Dec 4, 1996</small>
+            </button>
+
+            <button class="timeline-item"
+                    data-title="Landing on Mars"
+                    data-date="July 4, 1997"
+                    data-description="The spacecraft reached Ares Vallis, using a parachute and giant airbags to cushion the impact.">
+                <span class="timeline-dot"></span>
+                <span>Landing</span>
+                <small>Jul 4, 1997</small>
+            </button>
+
+            <button class="timeline-item"
+                    data-title="First Steps"
+                    data-date="July 5, 1997"
+                    data-description="Late on Sol 2, Sojourner stood to its full height and drove down the lander's rear ramp, which sat tilted at 20 degrees to the surface.">
+                <span class="timeline-dot"></span>
+                <span>First Steps</span>
+                <small>Jul 5, 1997</small>
+            </button>
+
+            <button class="timeline-item"
+                    data-title="Final Transmission"
+                    data-date="September 27, 1997"
+                    data-description="The last data transmission from the spacecraft was received, ending the mission.">
+                <span class="timeline-dot"></span>
+                <span>Final Signal</span>
+                <small>Sep 27, 1997</small>
+            </button>
+        </div>
+
+        <div class="timeline-details">
+            <p class="eyebrow" id="event-date">DECEMBER 4, 1996</p>
+            <h3 id="event-title">Launch</h3>
+            <p id="event-description">
+                Mars Pathfinder lifted off from Cape Canaveral Air Force Station in Florida on a Delta II 7925 rocket.
+            </p>
+        </div>
+    </section>
+
+    <!-- 2. Why did NASA build it? -->
+    <section class="section engineering" id="why">
+        <div class="section-heading">
+            <p class="eyebrow">WHY DID NASA BUILD IT?</p>
+            <h2>A Test of a New Way to Reach Mars</h2>
+            <p>
+                Pathfinder was designed as a technology demonstration: deliver an
+                instrumented lander and a free-roaming rover to the surface of Mars.
+            </p>
+        </div>
+
+        <div class="cards">
+            <article class="info-card">
+                <div class="card-icon">💰</div>
+                <h3>Demonstrate Low-Cost Exploration</h3>
+                <p>NASA wanted to prove a 'faster, better, cheaper' approach—showing we could build, launch, and land on Mars at a fraction of past mission costs.</p>
+            </article>
+                        <article class="info-card">
+                <div class="card-icon">🚙</div>
+                <h3>Test Wheeled Mobility</h3>
+                <p>Sojourner was humanity's first test drive on another planet, proving a small six-wheeled rover could safely navigate rocky Martian terrain</p>
+            </article>
+                        <article class="info-card">
+                <div class="card-icon">🚀</div>
+                <h3>For the future Rovers</h3>
+                <p>It acted as a blueprint for the future, testing suspension and navigation tech that paved the way for larger rovers like Curiosity and Perseverance.</p>
+            </article>
+            <article class="info-card">
+                <div class="card-icon">🌱</div>
+                <h3>Analyze Rocks and Soil</h3>
+                <p>Instead of staying in one spot, Sojourner drove right up to Martian rocks to analyze their exact chemical makeup.</p>
+            </article>
+            <article class="info-card">
+                <div class="card-icon">🌍</div>
+                <h3>Characterize the Martian Environment</h3>
+                <p>It captured close-up surface images and data that helped confirm Mars once had flowing water in its ancient past.</p>
+            </article>
+        </div>
+    </section>
+
+    <!-- 3. How was it designed? -->
+    <section class="section" id="engineering">
+        <div class="section-heading">
+            <p class="eyebrow">HOW DID ENGINEERS DESIGN IT?</p>
+            <h2>The Engineering Magic</h2>
+            <p>A parachute to slow the fall, airbags to absorb the impact, and a small rover to drive out afterward.</p>
+        </div>
+
+        <div class="cards">
+            <article class="info-card">
+                <div class="card-icon">📦</div>
+                <h3>Lightweight and Foldable Body</h3>
+                <p>Built from lightweight aluminum the size of a microwave, its legs folded like origami to fit inside the landing capsule.</p>
+            </article>
+            <article class="info-card">
+                <div class="card-icon">🔩</div>
+                <h3>Spring-Free Suspension</h3>
+                <p>Engineers invented a jointed six-wheel system without springs, letting it climb over rocks without tipping over.</p>
+            </article>
+            <article class="info-card">
+                <div class="card-icon">⚙️</div>
+                <h3>Cleated Metal Wheels</h3>
+                <p>Because rubber would freeze and crack, it used thin metal wheels with tiny teeth to grip Martian sand and rocks.</p>
+            </article>
+            <article class="info-card">
+                <div class="card-icon">🧊</div>
+                <h3>Aerogel Insulation</h3>
+                <p>To survive freezing Martian nights, engineers insulated its electronics with 'aerogel'—a super-light material known as frozen smoke.</p>
+            </article>
+            <article class="info-card">
+                <div class="card-icon">☀️</div>
+                <h3>Solar Panel & Laser</h3>
+                <p>A flat solar panel powered the rover, while small cameras and front lasers helped it see and avoid obstacles on its own.</p>
+            </article>
+        </div>
+
+        <div class="engineering-note">
+            <h3>What happened on impact?</h3>
+            <p>
+                Hitting the surface at about 31 mph (14 m/s), Pathfinder bounced around 15 times,
+                sometimes as high as 50 feet (15 m). It came to rest about two and a half minutes
+                later, roughly 1 km from the first impact point.
+            </p>
+        </div>
+        <div class="rover-demo">
+        <button id="rover-toggle" class="main-button"
+            aria-expanded="false" aria-controls="rover-video">
+        ▶ Watch the 3D Design Simulation
+            </button>
+
+             <div class="rover-video" id="rover-video" hidden></div>
+        </div>  
+    </section>
+
+    <!-- 4. How did it operate? -->
+    <section class="section engineering" id="operations">
+        <div class="section-heading">
+            <p class="eyebrow">HOW DID IT WORK FAR FROM EARTH?</p>
+            <h2>A Lander, a Rover and Their Instruments</h2>
+            <p>The mission sent data back to Earth from landing until its final transmission.</p>
+        </div>
+
+        <div class="cards">
+            <article class="info-card">
+                <div class="card-icon">🛰️</div>
+                <h3>Using the Lander as a "Middleman"</h3>
+                <p>Too small to reach Earth on its own, Sojourner beamed data to the stationary lander, which relayed the signals across deep space to NASA.</p>
+            </article>
+            <article class="info-card">
+                <div class="card-icon">⚛️</div>
+                <h3>Once-a-Day Command Cycles</h3>
+                <p>Because signals took minutes to arrive, engineers couldn't steer it live—instead, they sent a daily list of target waypoints each Martian morning.</p>
+            </article>
+            <article class="info-card">
+                <div class="card-icon">📷</div>
+                <h3>Onboard "Self-Driving" Hazard Avoidance</h3>
+                <p>Using front lasers and cameras to scan the ground, Sojourner could spot big rocks or steep drops and steer around them on its own.</p>
+            </article>
+        </div>
+
+        <div class="engineering-note">
+            <h3>What came back to Earth?</h3>
+            <p>
+                The mission returned 2.3 billion bits of data, including more than 16,500 images
+                from the lander, 550 from the rover, and over 15 chemical analyses of rocks and soil.
+                An atmospheric and meteorology instrument measured the atmosphere during descent and the
+                weather at the landing site, and radio tracking pinned down the spacecraft's location.
+            </p>
+        </div>
+        <!-- Button that opens the video -->
+<button
+  id="open-rover-video"
+  style="padding: 12px 20px; border-radius: 8px; border: 0; background: #f59e0b; color: #090d16; font-weight: 600; cursor: pointer;"
+>
+  Watch How Sojourner Worked 
+</button>
+
+    <!-- Video Modal (hidden until clicked) -->
+    <div
+    id="rover-video-modal"
+    style="display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(7, 9, 14, 0.88); align-items: center; justify-content: center; padding: 20px;"
+    >
+    <div style="position: relative; width: 100%; max-width: 960px; background: #07090e; border-radius: 12px; overflow: hidden; border: 1px solid #334155;">
+        <button
+        id="close-rover-video"
+        aria-label="Close video"
+        style="position: absolute; top: 10px; right: 10px; z-index: 10; width: 34px; height: 34px; border-radius: 6px; border: 1px solid #475569; background: #0f172a; color: #f8fafc; font-size: 18px; cursor: pointer;"
+        >
+        &times;
+        </button>
+
+        <video
+        id="rover-video-player"
+        src="./sojourner-30s-process.webm"
+        controls
+        playsinline
+        style="display: block; width: 100%; aspect-ratio: 16 / 9; background: #000;"
+        ></video>
+    </div>
+    </div>
+
+    <script>
+    const openBtn = document.getElementById("open-rover-video");
+    const closeBtn = document.getElementById("close-rover-video");
+    const modal = document.getElementById("rover-video-modal");
+    const video = document.getElementById("rover-video-player");
+
+    function openVideo() {
+        modal.style.display = "flex";
+        video.currentTime = 0;
+        video.play();
+    }
+
+    function closeVideo() {
+        video.pause();
+        modal.style.display = "none";
+    }
+
+    openBtn.addEventListener("click", openVideo);
+    closeBtn.addEventListener("click", closeVideo);
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeVideo();
+    });
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal.style.display === "flex") closeVideo();
+    });
+    </script>
+      
+    </section>
+
+    <!-- 5. Discoveries -->
+    <section class="section discoveries" id="discoveries">
+        <div class="section-heading">
+            <p class="eyebrow">WHAT DID IT DISCOVER?</p>
+            <h2>What Did Pathfinder Find?</h2>
+        </div>
+
+        <div class="discovery-content">
+            <div class="discovery-text">
+                <h3>Mega-Floods</h3>
+                <p> Smooth, rounded pebbles proved liquid water once carved Ares Vallis, unleashing water volumes the size of North America's Great Lakes in just 2 weeks.</p>
+
+                <h3>Robot Geologist</h3>
+                <p>Weighing just 10.6 kg , Sojourner snapped 550+ photos and ran 15+ chemical analyses by pressing its X-ray sensor right against Martian rocks.</p>
+
+                <h3>Magnetic Dust</h3>
+                <p>Airborne Martian dust turned out to be magnetic, stained with iron oxide left behind by an ancient water cycle.</p>
+
+                <h3>Wild Weather</h3>
+                <p>Sensors caught swirling dust devils, spotted early-morning water-ice clouds, and tracked sudden morning temperature spikes.</p>
+
+                <h3>Mars' Metal Heart</h3>
+                <p>Radio tracking of the planet's spin wobble revealed a central metallic core with a radius of 800 to 1,250 miles.</p>
+            </div>
+
+            <div class="discovery-image">
+                <img src="images/mm.webp" alt="Sojourner rover on the Martian surface">
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Impact -->
+    <section class="section legacy" id="legacy">
+        <div class="section-heading">
+            <p class="eyebrow">HOW DID IT HELP US UNDERSTAND THE UNIVERSE?</p>
+            <h2>A Warmer, Wetter Mars</h2>
+        </div>
+
+        <div class="cards">
+            <article class="info-card">
+                <div class="card-icon">📦</div>
+                <h3>Warm, Wet Past</h3>
+                <p>Rounded pebbles and an ancient floodplain carved by Great Lakes-sized water volumes in 2 weeks proved Mars wasn't always a desert—it once had stable, running water.</p>
+            </article>
+            <article class="info-card">
+                <div class="card-icon">🔩</div>
+                <h3>Core, Dust & Weather</h3>
+                <p>Pathfinder measured an 800-to-1,250-mile metallic core, magnetic dust, swirling dust devils, and morning ice clouds.</p>
+            </article>
+            <article class="info-card">
+                <div class="card-icon">⚙️</div>
+                <h3>First Free-Ranging Rover</h3>
+                <p>Weighing 10.6 kg , Sojourner bounced 15 times in airbags, rolled down a 20-degree ramp, and snapped 550+ images.</p>
+            </article>
+        </div>
+
+        <p class="legacy-quote">
+            Pathfinder proved a new way to land safely on the Red Planet and delivered the first robotic rover to its surface.
+        </p>
+
+        <a href="https://science.nasa.gov/mission/mars-pathfinder/"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="main-button">
+            Explore the Official NASA Mission Page
+        </a>
+    </section>
+
+    <footer>
+        <p>SOJOURNER — THE LITTLE EXPLORER</p>
+        <p></p>
+
+        <div class="sources">
+            <a href="https://science.nasa.gov/mission/mars-pathfinder/"
+               target="_blank"
+               rel="noopener noreferrer">NASA Mars Pathfinder</a>
+
+            <a href="https://nssdc.gsfc.nasa.gov/"
+               target="_blank"
+               rel="noopener noreferrer">NASA Space Science Data Coordinated Archive</a>
+        </div>
+        
+        <p class="copyright">Nasa Space Apps project · 2026</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

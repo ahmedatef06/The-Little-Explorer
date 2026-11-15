@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sojourner Design | 3D Simulation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap">
+<style>
+:root{--orange:#e97845;--light:#ffad79;--white:#f5f2ee;--muted:#c9c2bb;--bg:#101014}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--white);font-family:'Inter',sans-serif;overflow:hidden}
+#stage{position:fixed;inset:0}
+canvas{display:block;width:100%;height:100%}
+#fade{position:fixed;inset:0;background:var(--bg);opacity:0;pointer-events:none;transition:opacity .7s}
+#fade.on{opacity:1;transition:none}
+.top{position:fixed;top:20px;left:24px;font-weight:800;letter-spacing:2px;font-size:14px;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.top span{color:var(--orange)}
+.caption{position:fixed;left:24px;bottom:92px;max-width:min(520px,calc(100vw - 48px));background:rgba(16,16,20,.84);border-left:4px solid var(--orange);padding:20px 24px;border-radius:6px;backdrop-filter:blur(6px)}
+.caption small{color:var(--orange);font-weight:700;letter-spacing:3px;font-size:12px}
+.caption h2{font-size:clamp(22px,3vw,30px);line-height:1.2;margin:6px 0 8px}
+.caption p{color:var(--muted);font-size:15px;line-height:1.6}
+.caption.swap{animation:in .6s both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.bar{position:fixed;left:24px;right:24px;bottom:28px;display:flex;align-items:center;gap:16px}
+#play{width:44px;height:44px;border-radius:50%;border:0;background:var(--orange);color:#fff;font-size:15px;cursor:pointer;transition:.3s}
+#play:hover{background:var(--light);color:#171717}
+.segs{flex:1;display:flex;gap:6px}
+.seg{position:relative;height:10px;border:0;border-radius:5px;background:rgba(255,255,255,.22);cursor:pointer;overflow:hidden}
+.seg:hover{background:rgba(255,255,255,.38)}
+.seg i{position:absolute;inset:0;width:0;background:var(--orange)}
+@media (prefers-reduced-motion:reduce){.caption.swap{animation:none}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div id="fade"></div>
+<div class="top">SOJOURNER<span>.</span> DESIGN SIMULATION</div>
+<div class="caption" id="cap" aria-live="polite"><small id="cnt"></small><h2 id="ttl"></h2><p id="txt"></p></div>
+<div class="bar">
+  <button id="play" aria-label="Pause">&#10074;&#10074;</button>
+  <div class="segs" id="segs"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+const lerp=(a,b,u)=>a+(b-a)*u, sm=u=>u*u*(3-2*u), cl=u=>Math.max(0,Math.min(1,u));
+const win=(u,a,b)=>{const k=(b-a)/4;return cl(Math.min((u-a)/k,(b-u)/k));};
+
+/* ---------- renderer, scene, light ---------- */
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+document.getElementById('stage').appendChild(renderer.domElement);
+const scene=new THREE.Scene(), sky=0xc48a63;
+scene.background=new THREE.Color(sky); scene.fog=new THREE.Fog(sky,5,28);
+const camera=new THREE.PerspectiveCamera(45,1,.05,100);
+scene.add(new THREE.HemisphereLight(0xffe2c4,0x5a3322,.8));
+const sun=new THREE.DirectionalLight(0xfff1e0,1.5); sun.position.set(3,5,2); sun.castShadow=true;
+sun.shadow.mapSize.set(2048,2048);
+Object.assign(sun.shadow.camera,{left:-4,right:4,top:4,bottom:-4,near:.5,far:14});
+scene.add(sun);
+
+/* ---------- Martian ground and rocks ---------- */
+const ground=new THREE.Mesh(new THREE.PlaneGeometry(80,80),new THREE.MeshStandardMaterial({color:0x8c5034,roughness:1}));
+ground.rotation.x=-Math.PI/2; ground.receiveShadow=true; scene.add(ground);
+let seed=7; const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const rockMat=new THREE.MeshStandardMaterial({color:0x6e4330,roughness:1,flatShading:true});
+for(let i=0;i<80;i++){
+  const x=(rnd()-.5)*30, z=(rnd()-.5)*30;
+  if(Math.abs(z)<1.2&&x>-2.5&&x<4.5) continue;
+  const s=.04+rnd()*.25, r=new THREE.Mesh(new THREE.DodecahedronGeometry(1,0),rockMat);
+  r.scale.set(s*(1+rnd()*.6),s*.6,s*(1+rnd()*.6)); r.position.set(x,s*.3,z); r.rotation.y=rnd()*6;
+  r.castShadow=r.receiveShadow=true; scene.add(r);
+}
+
+/* ---------- materials ---------- */
+const mBody=new THREE.MeshStandardMaterial({color:0xc4a86a,metalness:.35,roughness:.5});
+const glow={emissive:0xe97845,emissiveIntensity:0};
+const mArm=new THREE.MeshStandardMaterial({color:0xd5d5da,metalness:.4,roughness:.45,...glow});
+const mWheel=new THREE.MeshStandardMaterial({color:0xaaaab0,metalness:.4,roughness:.55});
+const mCam=new THREE.MeshStandardMaterial({color:0x222226,metalness:.3,roughness:.4,...glow});
+const mApxs=mCam.clone();
+const cv=document.createElement('canvas'); cv.width=256; cv.height=176;
+const g=cv.getContext('2d'); g.fillStyle='#14234d'; g.fillRect(0,0,256,176); g.strokeStyle='#5b78c4'; g.lineWidth=2;
+for(let i=0;i<=8;i++){g.beginPath();g.moveTo(i*32,0);g.lineTo(i*32,176);g.stroke();}
+for(let j=0;j<=4;j++){g.beginPath();g.moveTo(0,j*44);g.lineTo(256,j*44);g.stroke();}
+const mPanel=new THREE.MeshStandardMaterial({map:new THREE.CanvasTexture(cv),metalness:.3,roughness:.35,...glow});
+
+/* ---------- rover (units: metres, forward = +x) ---------- */
+function bar(a,b,r,mat){
+  const d=new THREE.Vector3().subVectors(b,a), len=d.length();
+  const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,len,10),mat);
+  m.position.copy(a).addScaledVector(d,.5);
+  m.quaternion.setFromUnitVectors(V(0,1,0),d.normalize());
+  return m;
+}
+function wheel(){
+  const w=new THREE.Group(), R=.065;
+  const rim=new THREE.Mesh(new THREE.CylinderGeometry(R,R,.06,24),mWheel); rim.rotation.x=Math.PI/2; w.add(rim);
+  const hub=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.07,12),mArm); hub.rotation.x=Math.PI/2; w.add(hub);
+  for(let i=0;i<12;i++){
+    const a=i/12*Math.PI*2, c=new THREE.Mesh(new THREE.BoxGeometry(.012,.012,.06),mWheel);
+    c.position.set(Math.cos(a)*R,Math.sin(a)*R,0); c.rotation.z=a; w.add(c);
+  }
+  return w;
+}
+const rover=new THREE.Group(); scene.add(rover);
+const part=(geo,mat,x,y,z)=>{const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);rover.add(m);return m;};
+part(new THREE.BoxGeometry(.34,.12,.26),mBody,0,.2,0);
+part(new THREE.BoxGeometry(.46,.01,.34),mPanel,0,.27,0);
+rover.add(bar(V(-.2,.275,0),V(-.2,.34,0),.004,mArm));
+[-1,1].forEach(s=>{
+  part(new THREE.BoxGeometry(.04,.03,.03),mCam,.19,.235,s*.07);
+  const l=part(new THREE.CylinderGeometry(.009,.009,.02,12),mCam,.215,.235,s*.07); l.rotation.z=Math.PI/2;
+});
+rover.add(bar(V(-.17,.19,0),V(-.3,.13,0),.008,mArm));
+part(new THREE.CylinderGeometry(.022,.022,.035,16),mApxs,-.3,.11,0);
+
+const wheels=[], rockers=[], bogies=[];
+[1,-1].forEach(s=>{
+  rover.add(bar(V(.06,.19,s*.13),V(.06,.19,s*.22),.012,mArm));
+  const side=new THREE.Group(); side.position.set(0,0,s*.22); rover.add(side);
+  const rocker=new THREE.Group(); rocker.position.set(.06,.19,0); side.add(rocker); rockers.push(rocker);
+  rocker.add(bar(V(0,0,0),V(.2,-.125,0),.012,mArm),bar(V(0,0,0),V(-.2,-.07,0),.012,mArm));
+  const fw=wheel(); fw.position.set(.2,-.125,0); rocker.add(fw); wheels.push(fw);
+  const bogie=new THREE.Group(); bogie.position.set(-.2,-.07,0); rocker.add(bogie); bogies.push(bogie);
+  bogie.add(bar(V(0,0,0),V(.12,-.055,0),.011,mArm),bar(V(0,0,0),V(-.12,-.055,0),.011,mArm));
+  [.12,-.12].forEach(x=>{const w=wheel(); w.position.set(x,-.055,0); bogie.add(w); wheels.push(w);});
+});
+rover.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;}});
+
+/* ---------- lander with 20 degree rear ramp ---------- */
+const H=.28, T20=Math.tan(20*Math.PI/180), RL=H/T20;
+const hs=x=>x<0?H:x<RL?H-T20*x:0;
+const lander=new THREE.Group(); lander.visible=false; scene.add(lander);
+const mLand=new THREE.MeshStandardMaterial({color:0xcfcfd4,metalness:.5,roughness:.5});
+const lb=new THREE.Mesh(new THREE.BoxGeometry(1.1,.26,.9),new THREE.MeshStandardMaterial({color:0x3a3a42,roughness:.7})); lb.position.set(-.55,.13,0);
+const lt=new THREE.Mesh(new THREE.BoxGeometry(1.1,.04,.9),mLand); lt.position.set(-.55,.26,0);
+const rp=new THREE.Mesh(new THREE.BoxGeometry(.82,.02,.6),mLand); rp.position.set(.385,.13,0); rp.rotation.z=-20*Math.PI/180;
+[lb,lt,rp].forEach(m=>{m.castShadow=m.receiveShadow=true;lander.add(m);});
+
+/* ---------- scenes ---------- */
+const S=[
+ {d:7, t:'Meet Sojourner', x:'The first robotic rover to explore Mars: just 10.6 kg and 30 cm tall.'},
+ {d:6, t:'A Compact, Solar-Powered Body', x:'A small box body topped by a solar panel that supplies the rover\u2019s power.'},
+ {d:8, t:'Six Wheels, Rocking Arms', x:'Linked rocker-bogie arms let the wheels move independently, so the rover keeps its footing over rocks.'},
+ {d:7, t:'Eyes and a Chemistry Lab', x:'Cameras documented the terrain, while the Alpha Proton X-ray Spectrometer identified the elements in rocks and soil.'},
+ {d:10,t:'Rolling Onto Mars', x:'Sojourner drove down the lander\u2019s rear ramp, which sat tilted 20\u00b0 to the surface.'}
+];
+const starts=[]; let total=0; S.forEach(s=>{starts.push(total);total+=s.d;});
+function aim(tx,ty,tz,r,h,a){camera.position.set(tx+Math.cos(a)*r,h,tz+Math.sin(a)*r);camera.lookAt(tx,ty,tz);}
+
+function pose(i,u,t){
+  let spin=0, th=0, ph=0;
+  if(i===0){ aim(0,.17,0,1.6,.7,lerp(.5,.5+Math.PI*2,u)); }
+  else if(i===1){
+    aim(0,.25,0,.9,1,lerp(1.9,2.6,sm(u)));
+    mPanel.emissiveIntensity=.4*win(u,.1,.9)*(.6+.4*Math.sin(t*5));
+  }else if(i===2){
+    const en=sm(cl(u/.2))*sm(cl((1-u)/.15));
+    rover.position.y=.28*en; spin=t*1.2;
+    th=.3*en*Math.sin(t*1.5); ph=-.5*th+.12*en*Math.sin(t*2.3);
+    mArm.emissiveIntensity=.45*en*(.6+.4*Math.sin(t*4));
+    aim(0,.4,0,1.25,.55,lerp(1.3,1.9,sm(u)));
+  }else if(i===3){
+    mCam.emissiveIntensity=.7*win(u,.05,.5)*(.6+.4*Math.sin(t*5));
+    mApxs.emissiveIntensity=.7*win(u,.5,.95)*(.6+.4*Math.sin(t*5));
+    aim(lerp(.12,-.12,sm(u)),.2,0,lerp(.8,.85,u),lerp(.45,.35,u),lerp(.4,2.74,sm(u)));
+  }else{
+    const x=lerp(-.7,2,u), d=.25;
+    rover.position.set(x,(hs(x-d)+hs(x+d))/2,0);
+    rover.rotation.z=-Math.atan2(hs(x-d)-hs(x+d),2*d); spin=x/.065;
+    aim(lerp(-.2,1,sm(u)),.2,0,2,.8,lerp(1.1,1.9,u));
+  }
+  wheels.forEach(w=>w.rotation.z=-spin);
+  rockers[0].rotation.z=th; rockers[1].rotation.z=-th;
+  bogies[0].rotation.z=ph;  bogies[1].rotation.z=-ph;
+}
+
+/* ---------- UI + loop ---------- */
+const $=id=>document.getElementById(id);
+const cap=$('cap'), fade=$('fade'), fills=[];
+let curScene=-1, Tm=0, playing=!matchMedia('(prefers-reduced-motion: reduce)').matches;
+S.forEach((s,i)=>{
+  const b=document.createElement('button'); b.className='seg'; b.style.flex=s.d;
+  b.setAttribute('aria-label','Go to scene '+(i+1)+': '+s.t);
+  const f=document.createElement('i'); b.appendChild(f); fills.push(f);
+  b.onclick=e=>{const r=b.getBoundingClientRect(); Tm=starts[i]+cl((e.clientX-r.left)/r.width)*s.d;};
+  $('segs').appendChild(b);
+});
+function showCaption(i){
+  $('cnt').textContent='0'+(i+1)+' / 0'+S.length; $('ttl').textContent=S[i].t; $('txt').textContent=S[i].x;
+  cap.classList.remove('swap'); void cap.offsetWidth; cap.classList.add('swap');
+  fade.classList.add('on'); requestAnimationFrame(()=>requestAnimationFrame(()=>fade.classList.remove('on')));
+}
+function setPlay(p){playing=p; const b=$('play'); b.innerHTML=p?'&#10074;&#10074;':'&#9654;'; b.setAttribute('aria-label',p?'Pause':'Play');}
+$('play').onclick=()=>setPlay(!playing);
+addEventListener('keydown',e=>{if(e.code==='Space'&&e.target===document.body){e.preventDefault();setPlay(!playing);}});
+setPlay(playing);
+
+function resize(){
+  const w=innerWidth,h=innerHeight; renderer.setSize(w,h);
+  camera.aspect=w/h; camera.fov=w/h<1?62:45; camera.updateProjectionMatrix();
+}
+addEventListener('resize',resize); resize();
+
+let last=performance.now();
+function frame(now){
+  const dt=Math.min(.05,(now-last)/1000); last=now;
+  if(playing){Tm+=dt; if(Tm>=total)Tm=0;}
+  let i=0; while(i<S.length-1&&Tm>=starts[i]+S[i].d)i++;
+  const u=cl((Tm-starts[i])/S[i].d);
+  mPanel.emissiveIntensity=mArm.emissiveIntensity=mCam.emissiveIntensity=mApxs.emissiveIntensity=0;
+  rover.position.set(0,0,0); rover.rotation.set(0,0,0); lander.visible=(i===4);
+  pose(i,u,Tm);
+  if(i!==curScene){curScene=i; showCaption(i);}
+  fills.forEach((f,k)=>f.style.width=(k<i?100:k===i?u*100:0)+'%');
+  renderer.render(scene,camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
